@@ -1,16 +1,27 @@
-FROM node:20-alpine
 
-# Define working directory
+FROM node:20-alpine AS builder
+
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json before the code
 COPY package*.json ./
 
-# Install dependencies (only on the base image)
+COPY . . 
+
 RUN npm install
 
-# Expose the port
+RUN npm run build 
+
+FROM node:20-alpine AS production
+
+ENV NODE_ENV production
 EXPOSE 3000
 
-# Default command
-CMD ["npm", "run", "start:dev"]
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY --from=builder /usr/src/app/dist ./dist
+
+CMD ["node", "dist/main"]
