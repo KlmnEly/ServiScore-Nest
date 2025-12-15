@@ -26,6 +26,7 @@ import { ServiceApplicantModule } from './service-applicant/service-applicant.mo
 import { ServiceWorkerModule } from './service-worker/service-worker.module';
 
 import { ServicesModule } from './services/services.module';
+import { StoreReviewModule } from './store-review/store-review.module';
 
 const runningInDocker = process.env.RUNNING_IN_DOCKER === 'true';
 const externalEnvPath = join(__dirname, '../../', '.env');
@@ -57,6 +58,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     ServiceApplicantModule,
     ServiceWorkerModule,
     ServicesModule,
+    StoreReviewModule,
     UserImagesModule
     
   ],
