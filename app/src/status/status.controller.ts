@@ -4,11 +4,11 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/entities/user.entity';
 import { StatusService } from './status.service';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { Status } from './entities/status.entity';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Statuses')
 @Controller('statuses')
@@ -17,7 +17,7 @@ export class StatusController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new status' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'The status has been successfully created.', type: Status })
@@ -45,7 +45,7 @@ export class StatusController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a status' })
   @ApiResponse({ status: HttpStatus.OK, description: 'The status has been successfully updated.', type: Status })
@@ -60,7 +60,7 @@ export class StatusController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a status' })
   @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'The status has been successfully deleted.' })
@@ -71,7 +71,7 @@ export class StatusController {
 
   @Post(':id/restore')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Restore a soft-deleted status' })
   @ApiResponse({ status: HttpStatus.OK, description: 'The status has been successfully restored.', type: Status })
