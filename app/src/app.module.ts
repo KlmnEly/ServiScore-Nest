@@ -42,7 +42,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     AdressesModule,
     StoreImagesModule,
     CountriesModule,
-    CitiesModule
+    CitiesModule,
     StoreCategoryModule,
     StatusModule,
     UserWorkerModule,
