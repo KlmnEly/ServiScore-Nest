@@ -20,6 +20,8 @@ import { StatusModule } from './status/status.module';
 import { UserWorkerModule } from './user-worker/user-worker.module';
 import { StoresModule } from './stores/stores.module';
 import { ServiceHistoryModule } from './service-history/service-history.module';
+import { ServiceApplicantModule } from './service-applicant/service-applicant.module';
+
 import { ServicesModule } from './services/services.module';
 
 const runningInDocker = process.env.RUNNING_IN_DOCKER === 'true';
@@ -48,6 +50,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     UserWorkerModule,
     StoresModule,
     ServiceHistoryModule,
+    ServiceApplicantModule,
     ServicesModule,
     
   ],
