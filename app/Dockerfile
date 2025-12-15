@@ -1,27 +1,35 @@
-
+# ---------- BUILDER ----------
 FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
+# 1️⃣ Copiar package.json PRIMERO
 COPY package*.json ./
 
-COPY . . 
-
+# 2️⃣ Instalar TODAS las dependencias
 RUN npm install
 
-RUN npm run build 
+# 3️⃣ Copiar el resto del código
+COPY . .
 
+# 4️⃣ Compilar Nest
+RUN npm run build
+
+
+# ---------- PRODUCTION ----------
 FROM node:20-alpine AS production
-
-ENV NODE_ENV production
-EXPOSE 3000
 
 WORKDIR /usr/src/app
 
+# 5️⃣ Copiar SOLO package.json
 COPY package*.json ./
 
-RUN npm install --only=production
+# 6️⃣ Instalar SOLO dependencias de producción
+RUN npm install --omit=dev
 
+# 7️⃣ Copiar el build desde builder
 COPY --from=builder /usr/src/app/dist ./dist
 
-CMD ["node", "dist/main"]
+EXPOSE 3000
+
+CMD ["node", "dist/main.js"]
