@@ -10,6 +10,7 @@ import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { AccessesModule } from './accesses/accesses.module';
 import { AuthModule } from './auth/auth.module';
+import { StoreCategoryModule } from './store-category/store-category.module'
 
 const runningInDocker = process.env.RUNNING_IN_DOCKER === 'true';
 const externalEnvPath = join(__dirname, '../../', '.env');
@@ -26,7 +27,8 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     RolesModule,
     UsersModule,
     AccessesModule,
-    AuthModule
+    AuthModule,
+    StoreCategoryModule,
   ],
 controllers: [AppController],
   providers: [AppService],
