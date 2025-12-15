@@ -1,22 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpCode, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, HttpCode, HttpStatus, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/entities/user.entity';
 import { StoreCategoryService } from './store-category.service';
 import { CreateStoreCategoryDto } from './dto/create-store-category.dto';
 import { UpdateStoreCategoryDto } from './dto/update-store-category.dto';
 import { StoreCategory } from './entities/store-category.entity';
+import { Role } from 'src/common/enums/role.enum';
 
 @ApiTags('Store Categories')
 @Controller('store-categories')
 export class StoreCategoryController {
-  constructor(private readonly storeCategoryService: StoreCategoryService) {}
+  constructor(private readonly storeCategoryService: StoreCategoryService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new store category' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'The store category has been successfully created.', type: StoreCategory })
@@ -38,13 +38,13 @@ export class StoreCategoryController {
   @ApiOperation({ summary: 'Get a store category by ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Return the store category.', type: StoreCategory })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Store category not found.' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<StoreCategory> {
+  async findOne(@Param('id',ParseIntPipe) id: number): Promise<StoreCategory> {
     return this.storeCategoryService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a store category' })
   @ApiResponse({ status: HttpStatus.OK, description: 'The store category has been successfully updated.', type: StoreCategory })
@@ -53,7 +53,7 @@ export class StoreCategoryController {
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized.' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateStoreCategoryDto: UpdateStoreCategoryDto,
   ): Promise<StoreCategory> {
     return this.storeCategoryService.update(id, updateStoreCategoryDto);
@@ -61,7 +61,7 @@ export class StoreCategoryController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a store category' })
@@ -69,13 +69,13 @@ export class StoreCategoryController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Store category not found.' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized.' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.storeCategoryService.remove(id);
   }
 
   @Post(':id/restore')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Restore a soft-deleted store category' })
@@ -83,7 +83,7 @@ export class StoreCategoryController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Store category not found.' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized.' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  async restore(@Param('id', ParseUUIDPipe) id: string): Promise<StoreCategory> {
+  async restore(@Param('id', ParseIntPipe) id: number): Promise<StoreCategory> {
     return this.storeCategoryService.restore(id);
   }
 }
