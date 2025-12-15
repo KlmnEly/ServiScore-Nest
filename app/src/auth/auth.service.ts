@@ -4,24 +4,63 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateAccessDto } from '../accesses/dto/create-access.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
+import { UsersService } from 'src/users/users.service';
+import { CreateUserAccessDto } from './dto/register.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private accessesService: AccessesService,
+    private readonly accessesService: AccessesService,
+    private readonly usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   // Register new access
-  async register (createAccessDto: CreateAccessDto) {
+  async register (createUserAccessDto: CreateUserAccessDto) {
+
+    const { accessData, userData } = createUserAccessDto;
+
+    const accessCreation: CreateAccessDto = {
+      email: accessData.email,
+      password: accessData.password,
+      roleId: accessData.roleId,
+    }
+
+    let newAccessId: number;
+
     try {
-      return await this.accessesService.create(createAccessDto);
+      const createdAccess = await this.accessesService.create(accessCreation);
+      newAccessId = createdAccess.id_access;
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       }
+      console.error('Error creating access:', error);
       throw new InternalServerErrorException('Error during registration');
     }
+
+    try {
+      const userCreation: CreateUserDto = {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        accessId: newAccessId
+      };
+
+      const newUser = await this.usersService.create(userCreation);
+      return newUser;
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+
+    // Rollback
+    try {
+      await this.accessesService.deletePermanent(newAccessId);
+      console.log(`Rolled back access with ID ${newAccessId}`);
+    } catch (rollbackError) {
+      console.error(`Error rolling back access with ID ${newAccessId}: ${rollbackError}`);
+    }
+    throw new InternalServerErrorException('Error during registration');
   }
 
   // Login existing access
