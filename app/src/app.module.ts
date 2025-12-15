@@ -20,6 +20,8 @@ import { StatusModule } from './status/status.module';
 import { UserWorkerModule } from './user-worker/user-worker.module';
 import { StoresModule } from './stores/stores.module';
 import { ServiceHistoryModule } from './service-history/service-history.module';
+import { WorkerReviewModule } from './worker-review/worker-review.module';
+
 import { ServiceApplicantModule } from './service-applicant/service-applicant.module';
 import { ServiceWorkerModule } from './service-worker/service-worker.module';
 
@@ -51,6 +53,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     UserWorkerModule,
     StoresModule,
     ServiceHistoryModule,
+    WorkerReviewModule,
     ServiceApplicantModule,
     ServiceWorkerModule,
     ServicesModule,
