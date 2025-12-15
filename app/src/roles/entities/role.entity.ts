@@ -1,5 +1,5 @@
 
-import { Access } from "src/accesses/entities/access.entity";
+import { Access } from "../../accesses/entities/access.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('roles')

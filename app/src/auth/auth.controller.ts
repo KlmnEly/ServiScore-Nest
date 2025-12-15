@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAccessDto } from '../accesses/dto/create-access.dto';
 import { LoginDto } from './dto/login.dto';
+import { CreateUserAccessDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,10 +9,12 @@ export class AuthController {
 
   // Register Endpoint
   // auth/register
-  @Post('register')
+@Post('register')
   @HttpCode(HttpStatus.CREATED)
-  register (@Body() createAccessDto: CreateAccessDto) {
-    return this.authService.register(createAccessDto);
+  register (
+    @Body() createUserAccessDto: CreateUserAccessDto,
+  ) {
+    return this.authService.register(createUserAccessDto);
   }
 
   // Login Endpoint
