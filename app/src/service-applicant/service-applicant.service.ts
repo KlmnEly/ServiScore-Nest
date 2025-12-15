@@ -94,7 +94,7 @@ export class ServiceApplicantService {
 
     if (dto.serviceId) {
       const service = await this.serviceRepository.findOne({ 
-        where: { id: dto.serviceId } 
+        where: { id_service: dto.serviceId } 
       });
       if (!service) {
         throw new NotFoundException(`Service with ID "${dto.serviceId}" not found`);

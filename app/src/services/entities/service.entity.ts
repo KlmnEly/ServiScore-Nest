@@ -1,5 +1,3 @@
-// src/services/entities/service.entity.ts
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,11 +6,12 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-// import { ServiceCategory } from '../../service_categories/entities/service_category.entity';
-// import { User } from '../../users/entities/user.entity';
-// import { Status } from '../../statuses/entities/status.entity';
-// import { Store } from '../../stores/entities/store.entity';
+import { User } from '../../users/entities/user.entity';
+import { Status } from '../../status/entities/status.entity';
+import { Store } from '../../stores/entities/store.entity';
+import { ServiceWorker } from 'src/service-worker/entities/service-worker.entity';
 
 @Entity('services')
 export class Service {
@@ -44,7 +43,7 @@ export class Service {
    * Foreign key referencing the Store entity (optional if service is tied to a physical store).
    */
   @Column({ name: 'store_id', nullable: true })
-  store_id: number ;
+  store_id: number;
 
   /**
    * Title of the service offered.
@@ -97,7 +96,7 @@ export class Service {
   @UpdateDateColumn({ type: 'timestamp' })
   service_updated_at: Date;
 
-  /*
+
   // --- RELATIONSHIPS (Uncomment when corresponding entities exist) ---
 
   @ManyToOne(() => User, (user) => user.services)
@@ -107,7 +106,12 @@ export class Service {
   @ManyToOne(() => Store, (store) => store.services)
   @JoinColumn({ name: 'store_id' })
   store: Store;
-  
-  // ... other relationships (ServiceCategory, Status)
-  */
+
+  @ManyToOne(() => Status, (status) => status.services)
+  @JoinColumn({ name: 'status_id' })
+  status: Status;
+
+  @OneToMany(() => ServiceWorker, (serviceWorker) => serviceWorker.services)
+  serviceWorker: ServiceWorker[];
+
 }

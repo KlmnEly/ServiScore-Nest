@@ -24,9 +24,9 @@ export class ServiceWorker {
   isActive: boolean;
 
   // Relación con el servicio
-  @ManyToOne(() => Service, service => service.serviceWorkers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Service, (service) => service.serviceWorker, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'service_id' })
-  service: Service;
+  services: Service;
 
   @Column('int', { name: 'service_id' })
   serviceId: number;

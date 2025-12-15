@@ -1,3 +1,6 @@
+import { Adress } from 'src/adresses/entities/adress.entity';
+import { Service } from 'src/services/entities/service.entity';
+import { StoreCategory } from 'src/store-category/entities/store-category.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -37,8 +40,6 @@ export class Store {
   @UpdateDateColumn({ type: 'timestamp' })
   store_updated_at: Date;
 
-  /*
-  // --- RELATIONSHIPS (Uncomment when corresponding entities exist) ---
 
   @ManyToOne(() => StoreCategory, (category) => category.stores)
   @JoinColumn({ name: 'store_category_id' })
@@ -46,7 +47,11 @@ export class Store {
 
   @OneToMany(() => Adress, (adress) => adress.store)
   adresses: Adress[];
-  */
+
+  // En la entidad Store
+  @OneToMany(() => Service, (service) => service.store)
+  services: Service[];
+
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;

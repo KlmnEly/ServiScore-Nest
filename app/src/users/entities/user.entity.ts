@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Access } from '../../accesses/entities/access.entity';
+import { Service } from 'src/services/entities/service.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -36,4 +38,8 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  // En la entidad User
+  @OneToMany(() => Service, (service) => service.user)
+  services: Service[];
 }
