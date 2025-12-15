@@ -21,6 +21,7 @@ import { UserWorkerModule } from './user-worker/user-worker.module';
 import { StoresModule } from './stores/stores.module';
 import { ServiceHistoryModule } from './service-history/service-history.module';
 import { ServiceApplicantModule } from './service-applicant/service-applicant.module';
+import { ServiceWorkerModule } from './service-worker/service-worker.module';
 
 import { ServicesModule } from './services/services.module';
 
@@ -51,6 +52,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     StoresModule,
     ServiceHistoryModule,
     ServiceApplicantModule,
+    ServiceWorkerModule,
     ServicesModule,
     
   ],
