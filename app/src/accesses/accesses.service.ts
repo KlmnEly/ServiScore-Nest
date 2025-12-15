@@ -31,7 +31,7 @@ export class AccessesService {
       });
 
       if (existingAccess) {
-        throw new Error(`Access with email "${access.email}" already exists.`);
+        throw new ConflictException(`Access with email "${access.email}" already exists.`);
       }
 
       // Hash password
@@ -56,7 +56,7 @@ export class AccessesService {
         throw err;
       }
 
-      throw new InternalServerErrorException('ERror creating access');
+      throw new InternalServerErrorException('Error creating access');
 
     } finally {
       await queryRunner.release();
@@ -182,4 +182,32 @@ export class AccessesService {
 
     return { message: `Access with id ${id} has been ${newIsActiveState ? 'activated' : 'deactivated'}.` };
   }
+
+  // Hard delete (permanent) an access
+  async deletePermanent(id: number): Promise<{ message: string }> {
+    const access = await this.accessRepository.findOneBy({ id_access: id });
+
+    if (!access) {
+      throw new NotFoundException(`Access with id ${id} not found.`);
+    }
+
+    try {
+      const result = await this.accessRepository.delete(id);
+
+      if (result.affected === 0) {
+        throw new NotFoundException(`Access with id ${id} not found.`);
+      }
+
+      return {
+        message: `Access with ID ${id} has been permanently deleted.`,
+      };
+      
+    } catch (error) {
+      console.error('Error during hard delete of access:', error);
+      throw new InternalServerErrorException(
+        'An error occurred while attempting to permanently delete the access.',
+      );
+    }
+  }
+
 }
