@@ -6,3 +6,6 @@ export class UpdateStoreCategoryDto extends PartialType(CreateStoreCategoryDto) 
   // Por ejemplo, si quieres permitir actualizar el estado activo/inactivo
   isActive?: boolean;
 }
+
+export class UpdateStoreCategoryDto extends PartialType(CreateStoreCategoryDto) {}
+
