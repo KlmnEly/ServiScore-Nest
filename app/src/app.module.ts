@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { StoreCategoryModule } from './store-category/store-category.module'
 import { StatusModule } from './status/status.module';
 import { UserWorkerModule } from './user-worker/user-worker.module';
+import { StoresModule } from './stores/stores.module';
 import { ServiceHistoryModule } from './service-history/service-history.module';
 
 const runningInDocker = process.env.RUNNING_IN_DOCKER === 'true';
@@ -34,6 +35,7 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     StoreCategoryModule,
     StatusModule,
     UserWorkerModule,
+    StoresModule,
     ServiceHistoryModule,
     
   ],
