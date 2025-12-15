@@ -1,4 +1,5 @@
 // import { User_image } from "./user_image.entity";
+import { UserImage } from "src/user_images/entities/user_image.entity";
 import { StoreImage } from "../../store_images/entities/store_image.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -13,10 +14,9 @@ export class Image {
 
     @OneToMany(() => StoreImage, store_image => store_image.Image)
     storeImages: StoreImage[];
-    
-    // Future connection with store entity
-    // @OneToMany(() => User_image, user_image => user_image.image)
-    // userImages: User_image[];
+
+    @OneToMany(() => UserImage, user_image => user_image.Image)
+    userImages: UserImage[];
 
 
 }
