@@ -6,11 +6,7 @@ export class CreateStoreCategoryDto {
   @MinLength(3, { message: 'The category name must be at least 3 characters long' })
   @MaxLength(100, { message: 'The category name must not exceed 100 characters' })
   name: string;
-
-  @IsOptional()
-  @IsString({ message: 'The description must be a string' })
-  description?: string;
-
+  
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value' })
   isActive?: boolean = true;

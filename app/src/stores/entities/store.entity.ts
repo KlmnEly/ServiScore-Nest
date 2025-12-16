@@ -39,7 +39,7 @@ export class Store {
   @UpdateDateColumn({ type: 'timestamp' })
   store_updated_at: Date;
 
-  @ManyToOne(() => StoreCategory, (storeCategory) => storeCategory.stores)
+  @ManyToOne(() => StoreCategory, (storeCategory) => storeCategory.storeCategory)
   @JoinColumn({ name: 'store_category_id', referencedColumnName: 'id_store_category' })
   storeCategory: StoreCategory;
 

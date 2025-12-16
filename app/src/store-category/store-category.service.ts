@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStoreCategoryDto } from './dto/create-store-category.dto';
@@ -66,7 +66,7 @@ export class StoreCategoryService {
   }
 
   // Get a single store category by ID
-  async findOne(id: number): Promise<StoreCategory> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<StoreCategory> {
     try {
       const category = await this.storeCategoryRepository.findOne({ where: { id } });
 
@@ -84,7 +84,7 @@ export class StoreCategoryService {
   }
 
   // Update a store category
-  async update(id: number, updateStoreCategoryDto: UpdateStoreCategoryDto): Promise<StoreCategory> {
+  async update(@Param('id', ParseIntPipe) id: number, updateStoreCategoryDto: UpdateStoreCategoryDto): Promise<StoreCategory> {
     try {
       const category = await this.findOne(id);
       
@@ -112,7 +112,7 @@ export class StoreCategoryService {
   }
 
   // Soft delete a store category
-  async remove(id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     try {
       const result = await this.storeCategoryRepository.softDelete(id);
       
@@ -128,7 +128,7 @@ export class StoreCategoryService {
   }
 
   // Restore a soft-deleted store category
-  async restore(id: number): Promise<StoreCategory> {
+  async restore(@Param('id', ParseIntPipe) id: number): Promise<StoreCategory> {
     try {
       const result = await this.storeCategoryRepository.restore(id);
       
