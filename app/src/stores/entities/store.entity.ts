@@ -2,6 +2,7 @@
 import { Adress } from 'src/adresses/entities/adress.entity';
 import { Service } from 'src/services/entities/service.entity';
 import { StoreCategory } from 'src/store-category/entities/store-category.entity';
+import { StoreImage } from 'src/store_images/entities/store_image.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -49,6 +50,9 @@ export class Store {
   // En la entidad Store
   @OneToMany(() => Service, (service) => service.store)
   services: Service[];
+
+  @OneToMany(() => StoreImage, (storeImage) => storeImage.storeImages)
+  storeImages: StoreImage[];
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;

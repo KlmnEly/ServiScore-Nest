@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateStoreImageDto } from './dto/create-store_image.dto';
 import { UpdateStoreImageDto } from './dto/update-store_image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,15 +21,15 @@ export class StoreImagesService {
     return this.storeImageRepository.find();
   }
   //  Retrieve a specific store image by ID
-  findOne(id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.storeImageRepository.findOneBy({ id_store_image: id });
   }
   // Update an existing store image by ID
-  update(id: number, updateStoreImageDto: UpdateStoreImageDto) {
+  update(@Param('id', ParseIntPipe) id: number, updateStoreImageDto: UpdateStoreImageDto) {
     return this.storeImageRepository.update(id, updateStoreImageDto);
   }
   // Delete a store image by ID
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const StoreImage = await this.findOne(id);
     return this.storeImageRepository.delete(id);
   }

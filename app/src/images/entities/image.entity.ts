@@ -12,8 +12,8 @@ export class Image {
     @Column({ name: 'image_url' })
     image_url: string;
 
-    @OneToMany(() => StoreImage, store_image => store_image.Image)
-    storeImages: StoreImage[];
+    @OneToMany(() => StoreImage, store_image => store_image.imageStores)
+    imageStores: StoreImage[];
 
     @OneToMany(() => UserImage, user_image => user_image.Image)
     userImages: UserImage[];
