@@ -111,7 +111,7 @@ export class Service {
   @JoinColumn({ name: 'status_id' })
   status: Status;
 
-  @OneToMany(() => ServiceWorker, (serviceWorker) => serviceWorker.services)
-  serviceWorker: ServiceWorker[];
+  @OneToMany(() => ServiceWorker, (serviceWorker) => serviceWorker.workerService)
+  workerService: ServiceWorker[];
 
 }

@@ -1,63 +1,30 @@
-// src/service-worker/entities/service-worker.entity.ts
-import { 
-  Column, 
-  CreateDateColumn, 
-  DeleteDateColumn, 
-  Entity, 
-  JoinColumn, 
-  ManyToOne, 
-  PrimaryGeneratedColumn, 
-  UpdateDateColumn 
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { Service } from '../../services/entities/service.entity';
-import { User } from '../../users/entities/user.entity';
+import { UserWorker } from 'src/user-worker/entities/user-worker.entity';
 
 @Entity('service_workers')
 export class ServiceWorker {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id_service_worker: number;
 
-  @Column('varchar', { length: 50, default: 'active' })
-  status: string; // active, inactive, on_leave
-
-  @Column('boolean', { default: true })
-  isActive: boolean;
-
-  // Relación con el servicio
-  @ManyToOne(() => Service, (service) => service.serviceWorker, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'service_id' })
-  services: Service;
-
-  @Column('int', { name: 'service_id' })
+  @Column({ name: 'service_id' })
   serviceId: number;
 
-  // Relación con el trabajador
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'worker_id' })
-  worker: User;
-
-  @Column('int', { name: 'worker_id' })
+  @Column({ name: 'worker_id' })
   workerId: number;
 
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdAt: Date;
+  @ManyToOne(() => Service, (service) => service.workerService)
+  @JoinColumn({ name: 'service_id', referencedColumnName: 'id_service' })
+  workerService: Service;
 
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updatedAt: Date;
+  @ManyToOne(() => UserWorker, (worker) => worker.serviceWorker)
+  @JoinColumn({ name: 'service_id', referencedColumnName: 'id_service' })
+  serviceWorker: UserWorker;
 
-  @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'timestamp',
-    nullable: true,
-  })
-  deletedAt: Date;
 }

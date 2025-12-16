@@ -1,20 +1,17 @@
 // src/service-worker/dto/create-service-worker.dto.ts
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateServiceWorkerDto {
-  @IsString()
-  @IsOptional()
-  status?: string;
 
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
 
-  @IsInt()
+  @IsNumber()
   @IsNotEmpty()
   serviceId: number;
 
-  @IsInt()
+  @IsNumber()
   @IsNotEmpty()
   workerId: number;
 }
