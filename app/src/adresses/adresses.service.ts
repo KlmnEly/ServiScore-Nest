@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateAdressDto } from './dto/create-adress.dto';
 import { UpdateAdressDto } from './dto/update-adress.dto';
 import { Repository } from 'typeorm';
@@ -30,13 +30,13 @@ export class AdressesService {
     return address;
   }
   // Update an existing address by ID
-  async update(id: number, dto: UpdateAdressDto) {
+  async update(@Param('id', ParseIntPipe) id: number, dto: UpdateAdressDto) {
     const address = await this.findOne(id);
     Object.assign(address, dto);
     return this.adressRepository.save(address);
   }
   // Delete an address by ID
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const address = await this.findOne(id);
     return this.adressRepository.delete(id);
   }
