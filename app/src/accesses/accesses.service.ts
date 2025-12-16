@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateAccessDto } from './dto/create-access.dto';
 import { UpdateAccessDto } from './dto/update-access.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +18,7 @@ export class AccessesService {
   // Create a new access record
   async create(access: CreateAccessDto) {
     if (!access || !access.email || !access.email.trim()) {
-      throw new Error('ACcess data must be provided');
+      throw new Error('Access data must be provided');
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -101,7 +101,7 @@ export class AccessesService {
   }
 
   // Get access by id
-  async getById(id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     if (!id || id <= 0) {
       throw new BadRequestException('A valid id is required.');
     }
@@ -151,7 +151,7 @@ export class AccessesService {
   }
 
   // Update access
-  async update(id: number, updateAccessDto: UpdateAccessDto) {
+  async update(@Param('id', ParseIntPipe) id: number, updateAccessDto: UpdateAccessDto) {
     if (!updateAccessDto.email || !updateAccessDto.email.trim()) {
       return 'No data to update';
     }
@@ -168,7 +168,7 @@ export class AccessesService {
   }
 
   // Soft delete (deactivate) or reactivate an access
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const access = await this.accessRepository.findOneBy({ id_access: id });
 
     if (!access) {
@@ -184,7 +184,7 @@ export class AccessesService {
   }
 
   // Hard delete (permanent) an access
-  async deletePermanent(id: number): Promise<{ message: string }> {
+  async deletePermanent(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
     const access = await this.accessRepository.findOneBy({ id_access: id });
 
     if (!access) {
