@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
@@ -21,7 +21,7 @@ export class CountriesService {
     return this.countryRepository.find();
   }
   // Retrieve a specific country by ID
-  async findOne(id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     const country = await this.countryRepository.findOneBy({ id_country: id });
 
     if (!country) {
@@ -31,13 +31,13 @@ export class CountriesService {
     return country;
   }
   // Update an existing country by ID
-  async update(id: number, dto: UpdateCountryDto) {
+  async update(@Param('id', ParseIntPipe) id: number, dto: UpdateCountryDto) {
     const country = await this.findOne(id);
     Object.assign(country, dto);
     return this.countryRepository.save(country);
   }
   // Delete a country by ID
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const country = await this.findOne(id);
     return this.countryRepository.delete(id);
   }
