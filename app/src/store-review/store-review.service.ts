@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateStoreReviewDto } from './dto/create-store-review.dto';
 import { UpdateStoreReviewDto } from './dto/update-store-review.dto';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
@@ -21,15 +21,15 @@ export class StoreReviewService {
     return this.storeReviewRepository.find();
   }
   // Get store review by id
-  findOne(id: number) {
-    return this.storeReviewRepository.findOneBy({ id_worker_revew: id });
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.storeReviewRepository.findOneBy({ id_store_review: id });
   }
   // Update a store review by id
-  update(id: number, updateStoreReviewDto: UpdateStoreReviewDto) {
+  update(@Param('id', ParseIntPipe) id: number, updateStoreReviewDto: UpdateStoreReviewDto) {
     return this.storeReviewRepository.update(id, updateStoreReviewDto);
   }
   // Delete a store review by id
- async remove(id: number) {
+ async remove(@Param('id', ParseIntPipe) id: number) {
     const image = await this.findOne(id);
     return this.storeReviewRepository.delete(id);
   }
