@@ -7,7 +7,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 @Entity('images')
 export class Image {
     @PrimaryGeneratedColumn('increment')
-    image_id: number;
+    id_image: number;
 
     @Column({ name: 'image_url' })
     image_url: string;

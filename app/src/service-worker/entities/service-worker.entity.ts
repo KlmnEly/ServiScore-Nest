@@ -24,7 +24,7 @@ export class ServiceWorker {
   workerService: Service;
 
   @ManyToOne(() => UserWorker, (worker) => worker.serviceWorker)
-  @JoinColumn({ name: 'service_id', referencedColumnName: 'id_service' })
+  @JoinColumn({ name: 'user_worker_id', referencedColumnName: 'id_user_worker' })
   serviceWorker: UserWorker;
 
 }

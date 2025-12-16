@@ -1,9 +1,12 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { ServiceWorker } from 'src/service-worker/entities/service-worker.entity';
 
 @Entity('user_workers')
 export class UserWorker {
+    @PrimaryGeneratedColumn('increment')
+        id_user_worker: number;
+
     @Column({name: 'user_id' })
     userId: number;
 

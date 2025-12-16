@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CountriesService } from './countries.service';
 import { CountriesController } from './countries.controller';
-import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Country } from './entities/country.entity';
 
 // Module definition for Countries

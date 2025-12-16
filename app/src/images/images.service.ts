@@ -22,7 +22,7 @@ export class ImageService {
   }
   // Get image by id
   findOne(id: number) {
-    return this.imagesRepository.findOneBy({ image_id: id });
+    return this.imagesRepository.findOneBy({ id_image: id });
   }
   // Update an image by id
   update(id: number, updateImageDto: UpdateImageDto) {

@@ -5,7 +5,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryG
 @Entity('store_categories')
 export class StoreCategory {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id_store_category: number;
 
   @Column({ unique: true })
   name: string;

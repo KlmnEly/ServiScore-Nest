@@ -1,8 +1,8 @@
 import { Injectable, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateStoreReviewDto } from './dto/create-store-review.dto';
 import { UpdateStoreReviewDto } from './dto/update-store-review.dto';
-import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-import { Repository } from 'typeorm/browser/repository/Repository.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { StoreReview } from './entities/store-review.entity';
 
 // Service for managing store reviews

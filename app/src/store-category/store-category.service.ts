@@ -68,7 +68,7 @@ export class StoreCategoryService {
   // Get a single store category by ID
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<StoreCategory> {
     try {
-      const category = await this.storeCategoryRepository.findOne({ where: { id } });
+      const category = await this.storeCategoryRepository.findOne({ where: { id_store_category: id } });
 
       if (!category) {
         throw new NotFoundException(`Store category with ID ${id} not found.`);
