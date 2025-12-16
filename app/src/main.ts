@@ -29,7 +29,10 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'https://servi-score.vercel.app/', 
+    origin: [
+      'https://servi-score.vercel.app/',
+      'http://localhost:3000'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
