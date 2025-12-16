@@ -2,6 +2,7 @@
 
 import { IsNotEmpty, IsString, IsNumber, IsDecimal, IsDateString, IsOptional, Min, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateServiceDto {
   /**
@@ -88,5 +89,6 @@ export class CreateServiceDto {
   @ApiProperty({ example: '2025-12-31T10:00:00Z', description: 'Scheduled date and time (ISO 8601).' })
   @IsNotEmpty()
   @IsDateString()
-  service_datetime: String;
+  @Type(() => Date)
+  service_datetime: Date;
 }
