@@ -10,7 +10,7 @@ export class CreateStoreDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  store_category_id: number;
+  storeCategoryId: number;
 
   /**
    * The name of the new store.

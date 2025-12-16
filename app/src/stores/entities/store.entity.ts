@@ -1,3 +1,4 @@
+
 import { Adress } from 'src/adresses/entities/adress.entity';
 import { Service } from 'src/services/entities/service.entity';
 import { StoreCategory } from 'src/store-category/entities/store-category.entity';
@@ -11,8 +12,6 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-// import { StoreCategory } from '../../store_categories/entities/store_category.entity';
-// import { Adress } from '../../adresses/entities/adress.entity';
 
 @Entity('stores')
 export class Store {
@@ -20,7 +19,7 @@ export class Store {
   id_store: number;
 
   @Column({ name: 'store_category_id' })
-  store_category_id: number;
+  storeCategoryId: number;
 
   @Column({ length: 255 })
   store_name: string;
@@ -40,18 +39,16 @@ export class Store {
   @UpdateDateColumn({ type: 'timestamp' })
   store_updated_at: Date;
 
-
-  @ManyToOne(() => StoreCategory, (category) => category.stores)
-  @JoinColumn({ name: 'store_category_id' })
-  category: StoreCategory;
+  @ManyToOne(() => StoreCategory, (storeCategory) => storeCategory.stores)
+  @JoinColumn({ name: 'store_category_id', referencedColumnName: 'id_store_category' })
+  storeCategory: StoreCategory;
 
   @OneToMany(() => Adress, (adress) => adress.store)
-  adresses: Adress[];
+  addresses: Adress[];
 
   // En la entidad Store
   @OneToMany(() => Service, (service) => service.store)
   services: Service[];
-
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
