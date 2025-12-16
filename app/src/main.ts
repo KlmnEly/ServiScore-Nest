@@ -28,6 +28,15 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: [
+      'https://servi-score.vercel.app/',
+      'http://localhost:3000'
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const port = process.env.APP_PORT || 3000;
   await app.listen(port);
   console.log(`🚀 Server running on port ${port}`);
