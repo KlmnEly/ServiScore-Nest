@@ -88,5 +88,5 @@ export class CreateServiceDto {
   @ApiProperty({ example: '2025-12-31T10:00:00Z', description: 'Scheduled date and time (ISO 8601).' })
   @IsNotEmpty()
   @IsDateString()
-  service_datetime: Date;
+  service_datetime: String;
 }
