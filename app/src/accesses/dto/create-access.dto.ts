@@ -20,13 +20,10 @@ export class CreateAccessDto {
     @MinLength(6, { message : 'The password must be at least 6 characters long.' })
     password: string;
 
-    @ApiProperty({
-        example: 1,
-        description: 'The role ID associated with the access',
-    })
     @IsNotEmpty({ message: 'The role must be provided.' })
     @IsNumber({}, { message: 'The role must be a numeric value.' })
-    roleId: number;
+    @IsOptional()
+    roleId?: number;
 
     @IsOptional()
     @IsBoolean({ message: 'isActive must be a boolean value.' })

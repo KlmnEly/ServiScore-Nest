@@ -1,5 +1,6 @@
 // src/status/entities/status.entity.ts
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Service } from 'src/services/entities/service.entity';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('statuses')
 export class Status {
@@ -51,4 +52,8 @@ export class Status {
     nullable: true,
   })
   deletedAtStatus: Date;
+
+  // En la entidad Status
+  @OneToMany(() => Service, (service) => service.status)
+  services: Service[];
 }
