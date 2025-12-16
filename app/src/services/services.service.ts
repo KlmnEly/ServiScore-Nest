@@ -1,6 +1,6 @@
 // src/services/services.service.ts
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Service } from './entities/service.entity';
@@ -12,7 +12,7 @@ export class ServicesService {
   constructor(
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
-  ) {}
+  ) { }
 
   /**
    * Creates a new service record.
@@ -20,8 +20,15 @@ export class ServicesService {
    * @returns The newly created Service entity.
    */
   async create(createServiceDto: CreateServiceDto): Promise<Service> {
-    const service = this.serviceRepository.create(createServiceDto);
-    return await this.serviceRepository.save(service);
+    try {
+      const service = this.serviceRepository.create(createServiceDto);
+      return await this.serviceRepository.save(service);
+    } catch (error) {
+      // Cualquier error no controlado → 500
+      throw new InternalServerErrorException(
+        'Error creating service',
+      );
+    }
   }
 
   /**
@@ -80,8 +87,8 @@ export class ServicesService {
 
     await this.serviceRepository.update(id, { service_is_active: newIsActiveState });
 
-    return { 
-      message: `Service with id ${id} has been ${newIsActiveState ? 'activated' : 'deactivated'}.` 
+    return {
+      message: `Service with id ${id} has been ${newIsActiveState ? 'activated' : 'deactivated'}.`
     };
   }
 }
