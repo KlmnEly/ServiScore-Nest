@@ -1,17 +1,26 @@
 // src/stores/stores.service.ts
 
-import { Injectable, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Store } from './entities/store.entity';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { StoreCategory } from 'src/store-category/entities/store-category.entity';
 
 @Injectable()
 export class StoresService {
   constructor(
     @InjectRepository(Store)
     private readonly storeRepository: Repository<Store>,
+    @InjectRepository(StoreCategory)
+    private readonly storeCategoryRepository: Repository<StoreCategory>,
   ) {}
 
   /**
@@ -20,8 +29,28 @@ export class StoresService {
    * @returns The newly created Store entity.
    */
   async create(createStoreDto: CreateStoreDto): Promise<Store> {
-    const store = this.storeRepository.create(createStoreDto);
-    return await this.storeRepository.save(store);
+    const storeCategory = await this.storeCategoryRepository.findOne({
+      where: { id_store_category: createStoreDto.storeCategoryId },
+    });
+
+    if (!storeCategory) {
+      throw new NotFoundException(
+        `StoreCategory with ID ${createStoreDto.storeCategoryId} not found`,
+      );
+    }
+
+    try {
+      const store = this.storeRepository.create({
+        ...createStoreDto,
+        storeCategory,
+      });
+      return await this.storeRepository.save(store);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException('Error creating store (database constraint)');
+      }
+      throw error;
+    }
   }
 
   /**

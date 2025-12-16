@@ -24,7 +24,7 @@ export class ServicesService {
       const service = this.serviceRepository.create(createServiceDto);
       return await this.serviceRepository.save(service);
     } catch (error) {
-      // Cualquier error no controlado → 500
+      // error without control is → 500
       throw new InternalServerErrorException(
         'Error creating service',
       );
