@@ -1,5 +1,5 @@
-// import { store } from "src/stores/entities/store.entity";
 import { Image } from "src/images/entities/image.entity";
+import { Store } from "src/stores/entities/store.entity";
 import { JoinColumn } from "typeorm";
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 
@@ -9,24 +9,18 @@ export class StoreImage {
     @PrimaryGeneratedColumn('increment')
     id_store_image: number;
 
-    @Column({ name: 'store_id'})
-    store_id: number;
+    @Column({ name: 'store_id' })
+    storeId: number;
 
     @Column({ name: 'image_id' })
-    image_id: number;
-    
-    @ManyToOne(() => Image, image => image.storeImages, {
-        nullable: false,
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'image_id' })
-    Image: Image;
-    // Future connection with store entity
-    // @ManyToOne(() => store, store => store.storeImages, {
-    //     nullable: false,
-    //     onDelete: 'CASCADE',
-    // })
-    // @JoinColumn({ name: 'store_id' })
-    // store: store;
+    imageId: number;
+
+    @ManyToOne(() => Image, (image) => image.imageStores)
+    @JoinColumn({ name: 'image_id', referencedColumnName: 'id_image' })
+    imageStores: Image;
+
+    @ManyToOne(() => Store, (store) => store.storeImages)
+    @JoinColumn({ name: 'store_id', referencedColumnName: 'id_store' })
+    storeImages: Store;
 
 }

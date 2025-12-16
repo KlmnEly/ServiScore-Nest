@@ -7,9 +7,9 @@ export class City {
     @PrimaryGeneratedColumn('increment')
     id_city: number;
 
-    @Column({ name: 'city_name', default: 1 })
+    @Column()
     city_name: string;
 
-    @OneToMany(() => Adress, adress => adress.city)
+    @OneToMany(() => Adress, (adress) => adress.city)
     addresses: Adress[];
 }

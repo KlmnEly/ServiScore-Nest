@@ -1,6 +1,6 @@
 // src/stores/stores.service.ts
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Store } from './entities/store.entity';
@@ -38,7 +38,7 @@ export class StoresService {
    * @returns The found Store entity.
    * @throws NotFoundException if the store does not exist.
    */
-  async findOne(id: number): Promise<Store> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Store> {
     const store = await this.storeRepository.findOne({ where: { id_store: id } });
     if (!store) {
       throw new NotFoundException(`Store with ID ${id} not found`);
@@ -53,7 +53,7 @@ export class StoresService {
    * @returns The updated Store entity.
    * @throws NotFoundException if the store does not exist.
    */
-  async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
+  async update(@Param('id', ParseIntPipe) id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
     const store = await this.findOne(id); // Reuses findOne to check existence
 
     // Applies the updates and saves
@@ -62,7 +62,7 @@ export class StoresService {
   }
 
 
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const store = await this.storeRepository.findOneBy({ id_store: id });
 
     if (!store) {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AdressesService } from './adresses.service';
 import { AdressesController } from './adresses.controller';
-import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Adress } from './entities/adress.entity';
 
 // Module definition for Adresses

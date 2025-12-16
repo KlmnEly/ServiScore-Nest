@@ -1,6 +1,5 @@
 import { City } from "../../cities/entities/city.entity";
 import { Country } from "../..//countries/entities/country.entity";
-import { StoreImage } from "../../store_images/entities/store_image.entity";
 import { Column, Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 import { Store } from "src/stores/entities/store.entity";
 
@@ -11,33 +10,23 @@ export class Adress {
     id_adress: number;
 
     @Column({ name: 'store_id' })
-    store_id: number;
+    storeId: number;
 
     @Column({ name: 'city_id' })
-    city_id: number;
+    cityId: number;
 
     @Column({ name: 'country_id' })
-    country_id: number;
+    countryId: number;
 
-    @ManyToOne(() => Store, (store) => store.adresses, {
-        nullable: false,
-        onDelete: 'CASCADE'
-    })
-    @JoinColumn({ name: 'store_id' })
-    @JoinColumn({ name: 'store_id' })
-    store: StoreImage;
-
-    @ManyToOne(() => Country, country => country.addresses, {
-        nullable: false,
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'country_id' })
-    country: Country;
-
-    @ManyToOne(() => City, city => city.addresses, {
-        nullable: false,
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'city_id' })
+    @ManyToOne(() => City, (city) => city.addresses)
+    @JoinColumn({ name: 'city_id', referencedColumnName: 'id_city' })
     city: City;
+
+    @ManyToOne(() => Store, (store) => store.addresses)
+    @JoinColumn({ name: 'store_id', referencedColumnName: 'id_store' })
+    store: Store;
+
+    @ManyToOne(() => Country, (country) => country.addresses)
+    @JoinColumn({ name: 'country_id', referencedColumnName: 'id_country' })
+    country: Country;
 };

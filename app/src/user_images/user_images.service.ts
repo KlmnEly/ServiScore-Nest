@@ -3,7 +3,7 @@ import { CreateUserImageDto } from './dto/create-user_image.dto';
 import { UpdateUserImageDto } from './dto/update-user_image.dto';
 import { UserImage } from './entities/user_image.entity';
 import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+import { InjectRepository } from '@nestjs/typeorm';
 
 // Service for managing user images
 @Injectable()

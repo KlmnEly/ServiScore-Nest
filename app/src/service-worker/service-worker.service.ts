@@ -1,5 +1,5 @@
 // src/service-worker/service-worker.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { CreateServiceWorkerDto } from './dto/create-service-worker.dto';
@@ -22,26 +22,20 @@ export class ServiceWorkerService {
   async createServiceWorker(createServiceWorkerDto: CreateServiceWorkerDto): Promise<ServiceWorker> {
     await this.validateRelations(createServiceWorkerDto);
 
-    const serviceWorker = this.serviceWorkerRepository.create({
-      ...createServiceWorkerDto,
-      status: createServiceWorkerDto.status || 'active',
-      isActive: createServiceWorkerDto.isActive ?? true
-    });
+    const serviceWorker = this.serviceWorkerRepository.create({...createServiceWorkerDto});
     
     return await this.serviceWorkerRepository.save(serviceWorker);
   }
 
   async findAllServiceWorkers(): Promise<ServiceWorker[]> {
     return await this.serviceWorkerRepository.find({
-      relations: ['service', 'worker'],
-      where: { deletedAt: IsNull() },
-      order: { createdAt: 'DESC' },
+      relations: ['service', 'worker']
     });
   }
 
-  async findServiceWorkerById(id: number): Promise<ServiceWorker> {
+  async findServiceWorkerById(@Param('id', ParseIntPipe) id: number): Promise<ServiceWorker> {
     const serviceWorker = await this.serviceWorkerRepository.findOne({
-      where: { id, deletedAt: IsNull() },
+      where: { id_service_worker: id },
       relations: ['service', 'worker'],
     });
 
@@ -53,7 +47,7 @@ export class ServiceWorkerService {
   }
 
   async updateServiceWorker(
-    id: number, 
+    @Param('id', ParseIntPipe) id: number, 
     updateServiceWorkerDto: UpdateServiceWorkerDto
   ): Promise<ServiceWorker> {
     const existingWorker = await this.findServiceWorkerById(id);
@@ -74,7 +68,7 @@ export class ServiceWorkerService {
     return await this.serviceWorkerRepository.save(updatedWorker);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     const result = await this.serviceWorkerRepository.softDelete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Service worker with ID "${id}" not found`);

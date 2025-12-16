@@ -9,9 +9,10 @@ export class Country {
     @PrimaryGeneratedColumn('increment')
     id_country: number;
 
-    @Column({ name: 'country_name' })
+    @Column()
     country_name: string;
-    // One-to-many relationship with Adress entity
+
     @OneToMany(() => Adress, adress => adress.country)
     addresses: Adress[];
+
 }

@@ -22,7 +22,6 @@ import { StoresModule } from './stores/stores.module';
 import { ServiceHistoryModule } from './service-history/service-history.module';
 import { WorkerReviewModule } from './worker-review/worker-review.module';
 import {UserImagesModule} from './user_images/user_images.module';
-import { ServiceApplicantModule } from './service-applicant/service-applicant.module';
 import { ServiceWorkerModule } from './service-worker/service-worker.module';
 
 import { ServicesModule } from './services/services.module';
@@ -55,7 +54,6 @@ const externalEnvPath = join(__dirname, '../../', '.env');
     StoresModule,
     ServiceHistoryModule,
     WorkerReviewModule,
-    ServiceApplicantModule,
     ServiceWorkerModule,
     ServicesModule,
     StoreReviewModule,

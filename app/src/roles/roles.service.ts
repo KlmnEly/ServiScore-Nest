@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -75,7 +75,7 @@ export class RolesService {
   }
 
   // Get role by ID
-  async getById(id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     if (!id || id <= 0) {
       throw new BadRequestException('A valid id is required.');
     }
@@ -125,7 +125,7 @@ export class RolesService {
   }
 
   // Update a role
-  async update(id: number, updateRoleDto: UpdateRoleDto) {
+  async update(@Param('id', ParseIntPipe) id: number, updateRoleDto: UpdateRoleDto) {
     if (!updateRoleDto.name || !updateRoleDto.name.trim()) {
       return 'No data to update';
     }
@@ -142,7 +142,7 @@ export class RolesService {
   }
 
   // Soft delete (deactivate) or reactivate a role
-  async remove(id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     const role = await this.roleRepository.findOneBy({ id_role: id });
 
     if (!role) {

@@ -11,10 +11,10 @@ export class CreateStoreImageDto {
     @IsNotEmpty({ message: 'store_id is required' })
     @IsInt({ message: 'store_id must be an integer' })
     @IsPositive({ message: 'store_id must be a positive number' })
-    store_id: number;
+    storeId: number;
 
     @IsNotEmpty({ message: 'image_id is required' })
     @IsInt({ message: 'image_id must be an integer' })
     @IsPositive({ message: 'image_id must be a positive number' })
-    image_id: number;
+    imageId: number;
 };

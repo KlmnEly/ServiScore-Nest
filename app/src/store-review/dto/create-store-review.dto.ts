@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsPositive } from "class-validator";
+import { IsBoolean, IsInt, IsNotEmpty, IsPositive } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 // Data Transfer Object for creating a store review
@@ -10,13 +10,14 @@ export class CreateStoreReviewDto {
     @IsNotEmpty({ message: 'user_id is required' })
     @IsInt({ message: 'user_id must be an integer' })
     @IsPositive({ message: 'user_id must be a positive number' })
-    user_id: number;
+    userId: number;
 
     @IsNotEmpty({ message: 'store_id is required' })
     @IsInt({ message: 'store_id must be an integer' })
     @IsPositive({ message: 'store_id must be a positive number' })
-    store_id: number;
+    storeId: number;
 
     @IsNotEmpty({ message: 'store_review_like is required' })
-    store_review_like: string;
+    @IsBoolean()
+    store_review_like: boolean;
 };
