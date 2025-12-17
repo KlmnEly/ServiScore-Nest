@@ -13,7 +13,7 @@ import { Role } from 'src/common/enums/role.enum';
 @ApiTags('Statuses')
 @Controller('statuses')
 export class StatusController {
-  constructor(private readonly statusService: StatusService) {}
+  constructor(private readonly statusService: StatusService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -52,7 +52,7 @@ export class StatusController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Status not found.' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input data.' })
   async update(
-    @Param('id',ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateStatusDto: UpdateStatusDto,
   ): Promise<Status> {
     return this.statusService.updateStatus(id, updateStatusDto);
@@ -78,5 +78,15 @@ export class StatusController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Status not found.' })
   async restore(@Param('id', ParseIntPipe) id: number): Promise<Status> {
     return this.statusService.restoreStatus(id);
+  }
+  @Delete('reset-table-force')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Drop statuses table (Dangerous)' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Table dropped successfully.' })
+  async resetTable(): Promise<{ message: string }> {
+    await this.statusService.dropTable();
+    return { message: 'Table statuses dropped successfully. It will be recreated by TypeORM on next restart/sync.' };
   }
 }

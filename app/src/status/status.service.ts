@@ -12,7 +12,7 @@ export class StatusService {
     // Inject the Status repository
     @InjectRepository(Status)
     private readonly statusRepository: Repository<Status>,
-  ) {}
+  ) { }
 
   /**
    * Create a new status
@@ -46,12 +46,12 @@ export class StatusService {
    * @throws NotFoundException if status is not found or is deleted
    */
   async findStatusById(id: number): Promise<Status> {
-    const status = await this.statusRepository.findOne({ 
-      where: { 
+    const status = await this.statusRepository.findOne({
+      where: {
         id,
         // Ensure the status is not soft-deleted
-        deletedAtStatus: IsNull() 
-      } 
+        deletedAtStatus: IsNull()
+      }
     });
 
     if (!status) {
@@ -100,5 +100,17 @@ export class StatusService {
     await this.statusRepository.restore(id);
     // Return the restored status
     return await this.findStatusById(id);
+  }
+  /**
+   * Drop the statuses table (Destructive operation)
+   * WARNING: This will delete all data in the table.
+   */
+  async dropTable(): Promise<void> {
+    const queryRunner = this.statusRepository.manager.connection.createQueryRunner();
+    try {
+      await queryRunner.query('DROP TABLE IF EXISTS statuses CASCADE');
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
