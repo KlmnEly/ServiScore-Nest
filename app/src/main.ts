@@ -1,9 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  //Swagger set up
+  const config = new DocumentBuilder()
+    .setTitle('ServiScore API')
+    .setDescription('API documentation for ServiScore application')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
 
   // Global validation pipe
   app.useGlobalPipes(
@@ -29,5 +40,6 @@ async function bootstrap() {
   const port = process.env.APP_PORT || 3000;
   await app.listen(port);
   console.log(`🚀 Server running on port ${port}`);
+  console.log(`📘 Swagger docs available at http://localhost:${port}/api/docs`);
 }
 bootstrap();
