@@ -12,6 +12,7 @@ import { User } from '../../users/entities/user.entity';
 import { Status } from '../../status/entities/status.entity';
 import { Store } from '../../stores/entities/store.entity';
 import { ServiceWorker } from 'src/service-worker/entities/service-worker.entity';
+import { ServiceCategory } from 'src/service-category/entities/service-category.entity';
 
 @Entity('services')
 export class Service {
@@ -110,6 +111,10 @@ export class Service {
   @ManyToOne(() => Status, (status) => status.services)
   @JoinColumn({ name: 'status_id' })
   status: Status;
+
+  @ManyToOne(() => ServiceCategory, (category) => category.services)
+  @JoinColumn({ name: 'service_category_id' })
+  category: ServiceCategory;
 
   @OneToMany(() => ServiceWorker, (serviceWorker) => serviceWorker.workerService)
   workerService: ServiceWorker[];
