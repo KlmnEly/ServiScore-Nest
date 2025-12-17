@@ -4,7 +4,7 @@ FROM node:20-alpine AS builder
 WORKDIR /usr/src/app
 
 # Copiamos solo archivos de dependencias
-COPY package*.json ./
+COPY app/package*.json ./
 RUN npm ci
 
 # Copiamos el código fuente
