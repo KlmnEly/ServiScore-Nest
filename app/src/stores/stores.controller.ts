@@ -1,28 +1,29 @@
-// src/stores/stores.controller.ts
-
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse, 
-  ApiBody, 
-  ApiParam, 
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiNoContentResponse,
-  ApiForbiddenResponse,
-  ApiUnauthorizedResponse,
-  ApiNotFoundResponse,
-  ApiBadRequestResponse
+import {
+    ApiTags,
+    ApiOperation,
+    ApiResponse,
+    ApiBody,
+    ApiParam,
+    ApiBearerAuth,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiNoContentResponse,
+    ApiForbiddenResponse,
+    ApiUnauthorizedResponse,
+    ApiNotFoundResponse,
+    ApiBadRequestResponse,
+    ApiConsumes
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
 
 @ApiTags('stores')
 @Controller('stores')
@@ -30,7 +31,10 @@ import { Role } from 'src/common/enums/role.enum';
 @ApiBearerAuth('JWT')
 @ApiUnauthorizedResponse({ description: 'Unauthorized - Invalid or missing JWT token' })
 export class StoresController {
-    constructor(private readonly storesService: StoresService) { }
+    constructor(
+        private readonly storesService: StoresService,
+        private readonly cloudinaryService: CloudinaryService
+    ) { }
 
     /**
      * Create a new store
@@ -40,28 +44,17 @@ export class StoresController {
     @Post()
     @Roles(Role.Admin)
     @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({ 
-        summary: 'Create a new store', 
-        description: 'Creates a new store with the provided details. Only accessible by admin users.' 
+    @ApiOperation({
+        summary: 'Create a new store',
+        description: 'Creates a new store with the provided details. Only accessible by admin users.'
     })
-    @ApiBody({ 
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiBody({
         type: CreateStoreDto,
-        description: 'Store creation data',
-        examples: {
-            basic: {
-                summary: 'Basic store creation',
-                value: {
-                    storeCategoryId: 1,
-                    store_name: "Coffee Central",
-                    store_description: "A cozy cafe specialized in cold brew.",
-                    store_phone: "9876543210",
-                    store_total_favourites: 0,
-                    isActive: true
-                }
-            }
-        }
+        description: 'Store creation data, including optional file upload'
     })
-    @ApiCreatedResponse({ 
+    @ApiCreatedResponse({
         description: 'The store has been successfully created.',
         schema: {
             example: {
@@ -71,13 +64,14 @@ export class StoresController {
                 store_phone: "9876543210",
                 store_total_favourites: 0,
                 isActive: true,
+                imageUrl: 'https://res.cloudinary.com/...',
                 id: 1,
                 createdAt: "2023-01-01T00:00:00.000Z",
                 updatedAt: "2023-01-01T00:00:00.000Z"
             }
         }
     })
-    @ApiBadRequestResponse({ 
+    @ApiBadRequestResponse({
         description: 'Bad Request - Validation failed',
         schema: {
             example: {
@@ -91,7 +85,7 @@ export class StoresController {
             }
         }
     })
-    @ApiForbiddenResponse({ 
+    @ApiForbiddenResponse({
         description: 'Forbidden - User does not have permission (requires admin role)',
         schema: {
             example: {
@@ -101,7 +95,16 @@ export class StoresController {
             }
         }
     })
-    async create(@Body() createStoreDto: CreateStoreDto) {
+    async create(
+        @Body() createStoreDto: CreateStoreDto,
+        @UploadedFile() file: Express.Multer.File
+    ) {
+        if (file) {
+            const result = await this.cloudinaryService.uploadImage(file);
+            if ('secure_url' in result) {
+                createStoreDto.imageUrl = result.secure_url;
+            }
+        }
         return this.storesService.create(createStoreDto);
     }
 
@@ -111,11 +114,11 @@ export class StoresController {
      */
     @Get()
     @Roles(Role.Admin)
-    @ApiOperation({ 
-        summary: 'Get all stores', 
-        description: 'Retrieves a list of all stores. Only accessible by admin users.' 
+    @ApiOperation({
+        summary: 'Get all stores',
+        description: 'Retrieves a list of all stores. Only accessible by admin users.'
     })
-    @ApiOkResponse({ 
+    @ApiOkResponse({
         description: 'Returns all stores',
         schema: {
             type: 'array',
@@ -135,7 +138,7 @@ export class StoresController {
             }
         }
     })
-    @ApiForbiddenResponse({ 
+    @ApiForbiddenResponse({
         description: 'Forbidden - User does not have permission (requires admin role)',
         schema: {
             example: {
@@ -156,17 +159,17 @@ export class StoresController {
      */
     @Get(':id')
     @Roles(Role.Admin, Role.User)
-    @ApiOperation({ 
-        summary: 'Get store by ID', 
-        description: 'Retrieves a single store by its ID. Accessible by all authenticated users.' 
+    @ApiOperation({
+        summary: 'Get store by ID',
+        description: 'Retrieves a single store by its ID. Accessible by all authenticated users.'
     })
-    @ApiParam({ 
-        name: 'id', 
+    @ApiParam({
+        name: 'id',
         description: 'ID of the store to retrieve',
         example: 1,
         type: Number
     })
-    @ApiOkResponse({ 
+    @ApiOkResponse({
         description: 'Returns the requested store',
         schema: {
             type: 'object',
@@ -183,7 +186,7 @@ export class StoresController {
             }
         }
     })
-    @ApiNotFoundResponse({ 
+    @ApiNotFoundResponse({
         description: 'Store not found',
         schema: {
             example: {
@@ -193,7 +196,7 @@ export class StoresController {
             }
         }
     })
-    @ApiForbiddenResponse({ 
+    @ApiForbiddenResponse({
         description: 'Forbidden - User does not have permission',
         schema: {
             example: {
@@ -215,19 +218,21 @@ export class StoresController {
      */
     @Patch(':id')
     @Roles(Role.Admin, Role.User)
-    @ApiOperation({ 
-        summary: 'Update a store', 
-        description: 'Updates an existing store. Accessible by admin or the store owner.' 
+    @ApiOperation({
+        summary: 'Update a store',
+        description: 'Updates an existing store. Accessible by admin or the store owner.'
     })
-    @ApiParam({ 
-        name: 'id', 
+    @ApiParam({
+        name: 'id',
         description: 'ID of the store to update',
         example: 1,
         type: Number
     })
-    @ApiBody({ 
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiBody({
         type: UpdateStoreDto,
-        description: 'Store update data',
+        description: 'Store update data, including optional file upload',
         examples: {
             basic: {
                 summary: 'Basic store update',
@@ -239,7 +244,7 @@ export class StoresController {
             }
         }
     })
-    @ApiOkResponse({ 
+    @ApiOkResponse({
         description: 'The store has been successfully updated',
         schema: {
             example: {
@@ -250,12 +255,13 @@ export class StoresController {
                 store_phone: "9876543211",
                 store_total_favourites: 10,
                 isActive: true,
+                imageUrl: 'https://res.cloudinary.com/...',
                 createdAt: "2023-01-01T00:00:00.000Z",
                 updatedAt: "2023-01-02T00:00:00.000Z"
             }
         }
     })
-    @ApiNotFoundResponse({ 
+    @ApiNotFoundResponse({
         description: 'Store not found',
         schema: {
             example: {
@@ -265,7 +271,7 @@ export class StoresController {
             }
         }
     })
-    @ApiBadRequestResponse({ 
+    @ApiBadRequestResponse({
         description: 'Bad Request - Validation failed',
         schema: {
             example: {
@@ -278,7 +284,7 @@ export class StoresController {
             }
         }
     })
-    @ApiForbiddenResponse({ 
+    @ApiForbiddenResponse({
         description: 'Forbidden - User does not have permission to update this store',
         schema: {
             example: {
@@ -288,7 +294,17 @@ export class StoresController {
             }
         }
     })
-    async update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
+    async update(
+        @Param('id') id: string,
+        @Body() updateStoreDto: UpdateStoreDto,
+        @UploadedFile() file: Express.Multer.File
+    ) {
+        if (file) {
+            const result = await this.cloudinaryService.uploadImage(file);
+            if ('secure_url' in result) {
+                updateStoreDto.imageUrl = result.secure_url;
+            }
+        }
         return this.storesService.update(+id, updateStoreDto);
     }
 
@@ -300,20 +316,20 @@ export class StoresController {
     @Delete(':id')
     @Roles(Role.Admin, Role.User)
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ 
-        summary: 'Delete a store', 
-        description: 'Deletes a store by ID. Accessible by admin or the store owner.' 
+    @ApiOperation({
+        summary: 'Delete a store',
+        description: 'Deletes a store by ID. Accessible by admin or the store owner.'
     })
-    @ApiParam({ 
-        name: 'id', 
+    @ApiParam({
+        name: 'id',
         description: 'ID of the store to delete',
         example: 1,
         type: Number
     })
-    @ApiNoContentResponse({ 
-        description: 'The store has been successfully deleted' 
+    @ApiNoContentResponse({
+        description: 'The store has been successfully deleted'
     })
-    @ApiNotFoundResponse({ 
+    @ApiNotFoundResponse({
         description: 'Store not found',
         schema: {
             example: {
@@ -323,7 +339,7 @@ export class StoresController {
             }
         }
     })
-    @ApiForbiddenResponse({ 
+    @ApiForbiddenResponse({
         description: 'Forbidden - User does not have permission to delete this store',
         schema: {
             example: {

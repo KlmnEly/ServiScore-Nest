@@ -54,4 +54,9 @@ export class CreateStoreDto {
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value.' })
   isActive?: boolean;
+
+  @ApiProperty({ example: 'https://cloudinary.com/...', description: 'Image URL of the store.', required: false })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }
