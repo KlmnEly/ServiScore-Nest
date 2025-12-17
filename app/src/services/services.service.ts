@@ -19,14 +19,18 @@ export class ServicesService {
    * @param createServiceDto Data to create the new service.
    * @returns The newly created Service entity.
    */
-  async create(createServiceDto: CreateServiceDto): Promise<Service> {
+    async create(createServiceDto: CreateServiceDto): Promise<Service> {
     try {
       const service = this.serviceRepository.create(createServiceDto);
       return await this.serviceRepository.save(service);
     } catch (error) {
-      // error without control is → 500
+      console.error('Error creating service:', error);
+      // Check for specific database errors (like foreign key violation)
+      if (error.code === '23503') { // PostgreSQL foreign key violation code
+        throw new InternalServerErrorException(`Foreign key violation: ${error.detail}`);
+      }
       throw new InternalServerErrorException(
-        'Error creating service',
+        `Error creating service: ${error.message}`,
       );
     }
   }

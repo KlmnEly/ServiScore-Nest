@@ -1,25 +1,25 @@
 // src/services/services.controller.ts
 
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  HttpCode, 
-  HttpStatus, 
-  UseGuards 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  UseGuards
 } from '@nestjs/common';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse, 
-  ApiBearerAuth, 
-  ApiParam, 
-  ApiBody, 
-  ApiQuery 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+  ApiQuery
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -34,7 +34,7 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 @Controller('services')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ServicesController {
-  constructor(private readonly servicesService: ServicesService) {}
+  constructor(private readonly servicesService: ServicesService) { }
 
   /**
    * Create a new service
@@ -44,12 +44,12 @@ export class ServicesController {
   @Post()
   @Roles(Role.Admin, Role.User)
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Create a new service',
     description: 'Create a new service with the provided details. Requires authentication and appropriate role.'
   })
-  @ApiResponse({ 
-    status: HttpStatus.CREATED, 
+  @ApiResponse({
+    status: HttpStatus.CREATED,
     description: 'The service has been successfully created.',
     schema: {
       example: {
@@ -68,19 +68,19 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.BAD_REQUEST, 
-    description: 'Invalid input data' 
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input data'
   })
-  @ApiResponse({ 
-    status: HttpStatus.UNAUTHORIZED, 
-    description: 'Unauthorized - Invalid or missing JWT token' 
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Invalid or missing JWT token'
   })
-  @ApiResponse({ 
-    status: HttpStatus.FORBIDDEN, 
-    description: 'Forbidden - User does not have the required role' 
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden - User does not have the required role'
   })
-  @ApiBody({ 
+  @ApiBody({
     type: CreateServiceDto,
     examples: {
       basic: {
@@ -121,7 +121,7 @@ export class ServicesController {
    * @returns List of all active services
    */
   @Get()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get all active services',
     description: 'Retrieve a list of all active services. Supports pagination and filtering.'
   })
@@ -146,8 +146,8 @@ export class ServicesController {
     type: Number,
     example: 2
   })
-  @ApiResponse({ 
-    status: HttpStatus.OK, 
+  @ApiResponse({
+    status: HttpStatus.OK,
     description: 'Return all active services.',
     schema: {
       example: {
@@ -186,9 +186,9 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.INTERNAL_SERVER_ERROR, 
-    description: 'Internal server error' 
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Internal server error'
   })
   async findAll(
     @Param('page') page = 1,
@@ -204,18 +204,18 @@ export class ServicesController {
    * @returns Service details
    */
   @Get(':id')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get a service by ID',
     description: 'Retrieve detailed information about a specific service by its ID.'
   })
-  @ApiParam({ 
-    name: 'id', 
+  @ApiParam({
+    name: 'id',
     description: 'Service ID',
     type: 'number',
     example: 1
   })
-  @ApiResponse({ 
-    status: HttpStatus.OK, 
+  @ApiResponse({
+    status: HttpStatus.OK,
     description: 'Return the service successfully.',
     schema: {
       example: {
@@ -255,13 +255,13 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.NOT_FOUND, 
-    description: 'Service not found' 
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Service not found'
   })
-  @ApiResponse({ 
-    status: HttpStatus.BAD_REQUEST, 
-    description: 'Invalid service ID format' 
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid service ID format'
   })
   findOne(@Param('id') id: string) {
     return this.servicesService.findOne(+id);
@@ -275,17 +275,17 @@ export class ServicesController {
    */
   @Patch(':id')
   @Roles(Role.Admin, Role.User)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Update an existing service',
     description: 'Update the details of an existing service. Only the service owner or admin can update.'
   })
-  @ApiParam({ 
-    name: 'id', 
+  @ApiParam({
+    name: 'id',
     description: 'Service ID',
     type: 'number',
     example: 1
   })
-  @ApiBody({ 
+  @ApiBody({
     type: UpdateServiceDto,
     examples: {
       basic: {
@@ -305,8 +305,8 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.OK, 
+  @ApiResponse({
+    status: HttpStatus.OK,
     description: 'The service has been successfully updated.',
     schema: {
       example: {
@@ -324,17 +324,17 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.NOT_FOUND, 
-    description: 'Service not found' 
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Service not found'
   })
-  @ApiResponse({ 
-    status: HttpStatus.UNAUTHORIZED, 
-    description: 'Unauthorized - Invalid or missing JWT token' 
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Invalid or missing JWT token'
   })
-  @ApiResponse({ 
-    status: HttpStatus.FORBIDDEN, 
-    description: 'Forbidden - User can only update their own services unless they are an admin' 
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden - User can only update their own services unless they are an admin'
   })
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.servicesService.update(+id, updateServiceDto);
@@ -347,18 +347,18 @@ export class ServicesController {
    */
   @Delete(':id')
   @Roles(Role.Admin, Role.User)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Toggle service status (soft delete/reactivate)',
     description: 'Toggle the active status of a service. This is a soft delete operation that can be reversed.'
   })
-  @ApiParam({ 
-    name: 'id', 
+  @ApiParam({
+    name: 'id',
     description: 'Service ID',
     type: 'number',
     example: 1
   })
-  @ApiResponse({ 
-    status: HttpStatus.OK, 
+  @ApiResponse({
+    status: HttpStatus.OK,
     description: 'Service status has been successfully toggled.',
     schema: {
       example: {
@@ -367,23 +367,25 @@ export class ServicesController {
       }
     }
   })
-  @ApiResponse({ 
-    status: HttpStatus.NOT_FOUND, 
-    description: 'Service not found' 
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Service not found'
   })
-  @ApiResponse({ 
-    status: HttpStatus.UNAUTHORIZED, 
-    description: 'Unauthorized - Invalid or missing JWT token' 
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Invalid or missing JWT token'
   })
-  @ApiResponse({ 
-    status: HttpStatus.FORBIDDEN, 
-    description: 'Forbidden - User can only modify their own services unless they are an admin' 
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden - User can only modify their own services unless they are an admin'
   })
   async remove(@Param('id') id: string) {
     const result = await this.servicesService.remove(+id);
-    return {
-      message: `Service with ID ${id} has been ${result? 'reactivated' : 'deactivated'}`,
-      isActive: result,
-    };
+    // Asumming result is { message: string } and we need to fetch the new state or trust the message.
+    // Ideally service should return the new state. 
+    // Given the service implementation:
+    // return { message: `Service with id ${id} has been ${newIsActiveState ? 'activated' : 'deactivated'}.` };
+
+    return result;
   }
 }
