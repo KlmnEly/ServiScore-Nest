@@ -24,6 +24,9 @@ export class User {
   @Column({ type: 'varchar', length: 100 })
   last_name: string;
 
+  @Column({ name: 'photo_url', nullable: true })
+  photoUrl: string;
+
   @Column({ name: 'access_id' })
   accessId: number;
 

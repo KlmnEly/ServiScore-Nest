@@ -90,4 +90,8 @@ export class CreateServiceDto {
   @IsNotEmpty()
   @Type(() => Date)
   service_datetime: Date;
+  @ApiProperty({ example: 'https://cloudinary.com/...', description: 'Image URL of the service.', required: false })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }

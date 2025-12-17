@@ -10,7 +10,9 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  UseGuards
+  UseGuards,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,8 +21,10 @@ import {
   ApiBearerAuth,
   ApiParam,
   ApiBody,
-  ApiQuery
+  ApiQuery,
+  ApiConsumes
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Role } from '../common/enums/role.enum';
@@ -28,13 +32,17 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { CloudinaryService } from 'src/common/cloudinary/cloudinary.service';
 
 @ApiTags('Services')
 @ApiBearerAuth()
 @Controller('services')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ServicesController {
-  constructor(private readonly servicesService: ServicesService) { }
+  constructor(
+    private readonly servicesService: ServicesService,
+    private readonly cloudinaryService: CloudinaryService
+  ) { }
 
   /**
    * Create a new service
@@ -68,6 +76,33 @@ export class ServicesController {
       }
     }
   })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiBody({
+    type: CreateServiceDto,
+    description: 'Service data to create, including optional file upload'
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The service has been successfully created.',
+    schema: {
+      example: {
+        id: 1,
+        title: 'Plumbing Repair',
+        description: 'Professional plumbing services for home and office',
+        price: 50.00,
+        duration: 60,
+        isActive: true,
+        service_category_id: 2,
+        user_id: 10,
+        status_id: 1,
+        store_id: 5,
+        imageUrl: 'https://res.cloudinary.com/...',
+        createdAt: '2023-01-01T12:00:00.000Z',
+        updatedAt: '2023-01-01T12:00:00.000Z'
+      }
+    }
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Invalid input data'
@@ -80,39 +115,16 @@ export class ServicesController {
     status: HttpStatus.FORBIDDEN,
     description: 'Forbidden - User does not have the required role'
   })
-  @ApiBody({
-    type: CreateServiceDto,
-    examples: {
-      basic: {
-        summary: 'Basic service creation',
-        value: {
-          service_category_id: 2,
-          user_id: 10,
-          status_id: 1,
-          title: 'Plumbing Repair',
-          description: 'Professional plumbing services for home and office',
-          price: 50.00,
-          duration: 60,
-          isActive: true
-        }
-      },
-      withStore: {
-        summary: 'Service with store association',
-        value: {
-          service_category_id: 2,
-          user_id: 10,
-          status_id: 1,
-          store_id: 5,
-          title: 'Plumbing Repair',
-          description: 'Professional plumbing services for home and office',
-          price: 50.00,
-          duration: 60,
-          isActive: true
-        }
+  async create(
+    @Body() createServiceDto: CreateServiceDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    if (file) {
+      const result = await this.cloudinaryService.uploadImage(file);
+      if ('secure_url' in result) {
+        createServiceDto.imageUrl = result.secure_url;
       }
     }
-  })
-  create(@Body() createServiceDto: CreateServiceDto) {
     return this.servicesService.create(createServiceDto);
   }
 
@@ -273,37 +285,11 @@ export class ServicesController {
    * @param updateServiceDto Service data to update
    * @returns Updated service information
    */
-  @Patch(':id')
-  @Roles(Role.Admin, Role.User)
-  @ApiOperation({
-    summary: 'Update an existing service',
-    description: 'Update the details of an existing service. Only the service owner or admin can update.'
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Service ID',
-    type: 'number',
-    example: 1
-  })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
   @ApiBody({
     type: UpdateServiceDto,
-    examples: {
-      basic: {
-        summary: 'Basic service update',
-        value: {
-          title: 'Updated Plumbing Service',
-          description: 'Updated description for plumbing services',
-          price: 55.00,
-          duration: 90
-        }
-      },
-      status: {
-        summary: 'Update service status',
-        value: {
-          isActive: false
-        }
-      }
-    }
+    description: 'Service data to update, including optional file upload'
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -320,6 +306,7 @@ export class ServicesController {
         user_id: 10,
         status_id: 1,
         store_id: 5,
+        imageUrl: 'https://res.cloudinary.com/...',
         updatedAt: '2023-01-02T15:30:00.000Z'
       }
     }
@@ -336,7 +323,17 @@ export class ServicesController {
     status: HttpStatus.FORBIDDEN,
     description: 'Forbidden - User can only update their own services unless they are an admin'
   })
-  update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateServiceDto: UpdateServiceDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    if (file) {
+      const result = await this.cloudinaryService.uploadImage(file);
+      if ('secure_url' in result) {
+        updateServiceDto.imageUrl = result.secure_url;
+      }
+    }
     return this.servicesService.update(+id, updateServiceDto);
   }
 

@@ -30,4 +30,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value.' })
   isActive?: boolean;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
 }
